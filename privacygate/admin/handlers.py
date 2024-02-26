@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from aiogram.types import Message, CallbackQuery, KeyboardButton
+from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
 
 from . import model, callbackdata
 from . import keyboard
@@ -12,7 +12,6 @@ router = Router()
 
 class StatesUser(StatesGroup):
     admin = State()
-    user = State()
 
 
 def check_admin_from_message(func):
@@ -35,7 +34,7 @@ async def command_admin_handler(message: Message, state: FSMContext) -> None:
 
 
 @router.message(StatesUser.admin)
-async def echo_handler(message: Message) -> None:
+async def echo_handler(message: Message, state: FSMContext) -> None:
     if message.text == "Хочу стать админом":
         model.add_admin(message.from_user.id)
         await message.answer("Теперь вы админ")
@@ -45,8 +44,13 @@ async def echo_handler(message: Message) -> None:
 
     if message.text == keyboard.menu.keyboard[0][0].text:
         await message.answer("Управляйте доступом", reply_markup=keyboard.manage_access)
-    elif message.text == keyboard.menu.keyboard[1][0].text:
+    elif message.text == keyboard.menu.keyboard[0][1].text:
         await message.answer("Обрабатывайте заявки")
+    elif message.text == keyboard.menu.keyboard[1][0].text:
+        await state.clear()
+        await message.answer("Вы вышли из админки", reply_markup=ReplyKeyboardRemove())
+    else:
+        await message.answer("Неизвестная команда")
 
 
 @router.callback_query(callbackdata.UsersList.filter(None))

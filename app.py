@@ -7,14 +7,12 @@ from aiogram.enums import ParseMode
 
 from config import BOT_TOKEN
 import privacygate
-import paint
-
 
 
 async def main() -> None:
     bot = Bot(BOT_TOKEN, parse_mode=ParseMode.HTML)
     dp = Dispatcher()
-    dp.include_routers(paint.router, privacygate.router)
+    dp.include_routers(privacygate.router)
     await dp.start_polling(bot)
 
 

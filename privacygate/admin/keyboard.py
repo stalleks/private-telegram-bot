@@ -8,10 +8,11 @@ from . import model
 menu = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text="🕺Участники")
+            KeyboardButton(text="🕺Участники"),
+            KeyboardButton(text="🗂Заявки")
         ],
         [
-            KeyboardButton(text="🗂Заявки")
+            KeyboardButton(text="Выйти из админки")
         ]
     ],
     resize_keyboard=True
