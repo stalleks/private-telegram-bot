@@ -2,32 +2,49 @@ from ..database import *
 
 
 def check_admin(user_id: int) -> bool:
-    admin = users[user_id]["admin"]
-    return admin
+    user = get_user(user_id)
+    return bool(user[0][4])
 
 
 def add_admin(user_id: int):
-    users[user_id]["admin"] = True
+    update_user(user_id, "admin", "1")
 
 
 def remove_admin(user_id: int):
-    users[user_id]["admin"] = False
+    update_user(user_id, "admin", "0")
 
 
-def count_user() -> int:
-    return len(users.keys())
+def count_users() -> int:
+    return len(all_subscription_request())
 
 
-def get_users(num_first_key: int, count: int) -> tuple[dict, bool]:
+def count_requests() -> int:
+    return len(all_users())
+
+
+def get_users(num_first_key: int, count: int) -> tuple[list[tuple], bool]:
     flag_end = False
+    users = all_users()
     num_stop_key = num_first_key + count
-    keys = sorted(users.keys())
-    if num_stop_key >= len(keys):
-        flag_end = True
-        num_stop_key = len(keys)
 
-    select_users = {}
-    for ind in range(num_first_key, num_stop_key):
-        select_users[keys[ind]] = users[keys[ind]]
+    if num_stop_key >= len(users):
+        flag_end = True
+        num_stop_key = len(users)
+
+    select_users = [(users[i][0], users[i][1]) for i in range(num_first_key, num_stop_key)]
+
+    return select_users, flag_end
+
+
+def get_requests(num_first_key: int, count: int) -> tuple[list[tuple], bool]:
+    flag_end = False
+    users = all_subscription_request()
+    num_stop_key = num_first_key + count
+
+    if num_stop_key >= len(users):
+        flag_end = True
+        num_stop_key = len(users)
+
+    select_users = [(users[i][0], users[i][1]) for i in range(num_first_key, num_stop_key)]
 
     return select_users, flag_end

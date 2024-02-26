@@ -3,16 +3,6 @@ from datetime import datetime
 
 from aiogram.types import User
 
-users = {1636374994: {"name": "alex4", "admin": True},
-         1636374990: {"name": "alex0", "admin": False},
-         1636374995: {"name": "alex5", "admin": False},
-         1636374999: {"name": "alex9", "admin": False},
-         1636374993: {"name": "alex3", "admin": False},
-         1636374992: {"name": "alex2", "admin": False},
-         1636374996: {"name": "alex6", "admin": False},
-         }
-subscription_requests = {}
-
 
 connection = sqlite3.connect('db.sql')
 cursor = connection.cursor()
@@ -35,7 +25,12 @@ def get_user(user_id: int):
 def add_user(user: User):
     cursor.execute("INSERT INTO users (id, username, full_name, url, admin) "
                    "VALUES ('%s', '%s', '%s', '%s', '%s')" %
-                   (user.id, user.username, user.full_name, user.url, False))
+                   (user.id, user.username, user.full_name, user.url, 0))
+    connection.commit()
+
+
+def update_user(id: int, filed: str, value: str):
+    cursor.execute("UPDATE users SET '%s' = '%s' WHERE id = '%s'" % (filed, value, id))
     connection.commit()
 
 
@@ -45,9 +40,9 @@ def delete_user(user_id: int):
 
 
 def all_users():
-    cursor.execute("SELECT * FROM users")
+    cursor.execute("SELECT * FROM users ORDER BY username")
     users = cursor.fetchall()
-    print(users)
+    return users
 
 
 cursor.execute('CREATE TABLE IF NOT EXISTS subscription_requests ('
@@ -84,6 +79,6 @@ def delete_subscription_request(user_id: int):
 
 
 def all_subscription_request():
-    cursor.execute("SELECT * FROM subscription_requests")
+    cursor.execute("SELECT * FROM subscription_requests ORDER BY username")
     users = cursor.fetchall()
-    print(users)
+    return users

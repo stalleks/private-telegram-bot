@@ -55,11 +55,14 @@ async def echo_handler(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(callbackdata.UsersList.filter(None))
 async def manage_access(query: CallbackQuery, callback_data: callbackdata.UsersList):
-    count_users = 3
+    count_dipslay_users = 3
     if callback_data.type_list == "members":
-        await query.message.edit_text(f"Всего участников: {model.count_user()}. "
+        await query.message.edit_text(f"Всего участников: {model.count_users()}. "
                                       f"\nВыберете участника",
-                                      reply_markup=keyboard.list_members(callback_data.num_page, count_users))
-
+                                      reply_markup=keyboard.list_users(callback_data.num_page, count_dipslay_users))
+    elif callback_data.type_list == "requests":
+        await query.message.edit_text(f"Всего запросов: {model.count_requests()}. "
+                                      f"\nВыберете запрос",
+                                      reply_markup=keyboard.list_requests(callback_data.num_page, count_dipslay_users))
     elif callback_data.type_list == "cancel":
         await query.message.delete()
