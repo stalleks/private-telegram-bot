@@ -2,12 +2,16 @@ from ..database import *
 
 
 def check_user(user_id: int) -> bool:
-    contains = user_id in users
-    return contains
+    check = bool(get_user(user_id))
+    return check
 
 
-def accept_user_request(user_id: int) -> bool:
-    contains = user_id in subscription_requests
-    if not contains:
-        subscription_requests[user_id] = {"time": "21:00"}
-    return contains
+def check_subscription_request(user_id: int) -> bool:
+    check = bool(get_subscription_request(user_id))
+    return check
+
+
+def update_time_request(user_id: int):
+    date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    update_subscription_request(user_id, "date_time", date_time)
+

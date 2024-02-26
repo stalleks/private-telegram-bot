@@ -4,6 +4,7 @@ from aiogram.types import Message, CallbackQuery
 from . import keyboard
 from . import model
 from . import callbackdata
+from .. import database
 
 router = Router()
 
@@ -23,10 +24,12 @@ def check_user_from_message(func):
 @router.callback_query(callbackdata.SubscriptionRequests.filter(None))
 async def accept_user_request(query: CallbackQuery, callback_data: callbackdata.SubscriptionRequests):
     if callback_data.answer == "yes":
-        if model.accept_user_request(query.from_user.id):
+        if model.check_subscription_request(query.from_user.id):
             await query.answer("Вы уже подали заявку", show_alert=True)
             await query.message.delete()
+            model.update_time_request(query.from_user.id)
         else:
             await query.message.edit_text("Заявка принята")
+            database.add_subscription_request(query.from_user)
     else:
         await query.message.delete()
