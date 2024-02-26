@@ -8,14 +8,16 @@ from . import callbackdata
 router = Router()
 
 
-async def check_user(message: Message) -> bool:
-    user_id = message.from_user.id
-    contains = model.check_user(user_id)
-    if not contains:
-        # TODO: удалить клавиатуру у пользователя
-        await message.answer(f"Вы не в совете джедаев 🚷️. Подать заявку?",
-                             reply_markup=keyboard.subscription_dialog())
-    return contains
+def check_user_from_message(func):
+    async def wrapper(*args, **kwargs) -> None:
+        message: Message = args[0]
+        if model.check_user(message.from_user.id):
+            await func(*args)
+        else:
+            # TODO: удалить клавиатуру у пользователя
+            await message.answer(f"Вы не в совете джедаев 🚷️. Подать заявку?",
+                                 reply_markup=keyboard.subscription_dialog)
+    return wrapper
 
 
 @router.callback_query(callbackdata.SubscriptionRequests.filter(None))

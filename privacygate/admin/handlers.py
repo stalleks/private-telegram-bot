@@ -9,23 +9,30 @@ from . import keyboard
 
 router = Router()
 
+
 class StatesUser(StatesGroup):
     admin = State()
     user = State()
 
 
+def check_admin_from_message(func):
+    async def wrapper(*args, **kwargs) -> None:
+        message: Message = args[0]
+        if model.check_admin(message.from_user.id):
+            # TODO: передовать только актуальные аргументы
+            await func(*args, kwargs["state"])
+        else:
+            # TODO: удалить клавиатуру у пользователя
+            await message.answer("Вы не админ 🚷!")
+    return wrapper
+
+
 @router.message(Command("admin"))
+@check_admin_from_message
 async def command_admin_handler(message: Message, state: FSMContext) -> None:
-    if not model.check_admin(message.from_user.id):
-        await message.answer("Вы не админ 🚷!")
-        return
     await state.set_state(StatesUser.admin)
     await message.answer("Добро пожаловать в админку, Магистр", reply_markup=keyboard.menu)
 
-
-@router.message(StatesUser.admin, Command("rep"))
-async def command_admin_handler(message: Message, state: FSMContext) -> None:
-    await message.answer("Здорова")
 
 @router.message(StatesUser.admin)
 async def echo_handler(message: Message) -> None:
