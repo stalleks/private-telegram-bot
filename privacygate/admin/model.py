@@ -15,11 +15,11 @@ def remove_admin(user_id: int):
 
 
 def count_users() -> int:
-    return len(all_subscription_request())
+    return len(all_users())
 
 
 def count_requests() -> int:
-    return len(all_users())
+    return len(all_subscription_request())
 
 
 def get_users(num_first_key: int, count: int) -> tuple[list[tuple], bool]:

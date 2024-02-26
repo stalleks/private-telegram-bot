@@ -19,23 +19,10 @@ menu = ReplyKeyboardMarkup(
 )
 
 
-manage_access = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(text="Все участники",
-                                 callback_data=callbackdata.UsersList(type_list="members", num_page=0).pack())
-        ],
-        [
-            InlineKeyboardButton(text="Посмотреть заявки",
-                                 callback_data=callbackdata.UsersList(type_list="requests", num_page=0).pack())
-        ]
-    ]
-)
-
-
-def list_users(num_page: int, count: int) -> InlineKeyboardMarkup:
-    num_first_user = num_page * count
-    users, flag_end = model.get_users(num_first_user, count)
+def list_users(num_page: int) -> InlineKeyboardMarkup:
+    count_on_page = 3
+    num_first_user = num_page * count_on_page
+    users, flag_end = model.get_users(num_first_user, count_on_page)
 
     builder = InlineKeyboardBuilder()
     for user in users:
@@ -63,9 +50,10 @@ def list_users(num_page: int, count: int) -> InlineKeyboardMarkup:
     return builder.as_markup()
 
 
-def list_requests(num_page: int, count: int) -> InlineKeyboardMarkup:
-    num_first_user = num_page * count
-    users, flag_end = model.get_requests(num_first_user, count)
+def list_requests(num_page: int) -> InlineKeyboardMarkup:
+    count_on_page = 3
+    num_first_user = num_page * count_on_page
+    users, flag_end = model.get_requests(num_first_user, count_on_page)
 
     builder = InlineKeyboardBuilder()
     for user in users:

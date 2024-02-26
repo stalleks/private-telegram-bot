@@ -43,9 +43,13 @@ async def echo_handler(message: Message, state: FSMContext) -> None:
         await message.answer("Вы больше не админ")
 
     if message.text == keyboard.menu.keyboard[0][0].text:
-        await message.answer("Управляйте доступом", reply_markup=keyboard.manage_access)
+        await message.answer(f"Всего участников: {model.count_users()}. "
+                             f"\nВыберете участника",
+                             reply_markup=keyboard.list_users(0))
     elif message.text == keyboard.menu.keyboard[0][1].text:
-        await message.answer("Обрабатывайте заявки")
+        await message.answer(f"Всего запросов: {model.count_requests()}. "
+                             f"\nВыберете запрос",
+                             reply_markup=keyboard.list_requests(0))
     elif message.text == keyboard.menu.keyboard[1][0].text:
         await state.clear()
         await message.answer("Вы вышли из админки", reply_markup=ReplyKeyboardRemove())
@@ -55,14 +59,9 @@ async def echo_handler(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(callbackdata.UsersList.filter(None))
 async def manage_access(query: CallbackQuery, callback_data: callbackdata.UsersList):
-    count_dipslay_users = 3
     if callback_data.type_list == "members":
-        await query.message.edit_text(f"Всего участников: {model.count_users()}. "
-                                      f"\nВыберете участника",
-                                      reply_markup=keyboard.list_users(callback_data.num_page, count_dipslay_users))
+        await query.message.edit_reply_markup(reply_markup=keyboard.list_users(callback_data.num_page))
     elif callback_data.type_list == "requests":
-        await query.message.edit_text(f"Всего запросов: {model.count_requests()}. "
-                                      f"\nВыберете запрос",
-                                      reply_markup=keyboard.list_requests(callback_data.num_page, count_dipslay_users))
+        await query.message.edit_reply_markup(reply_markup=keyboard.list_requests(callback_data.num_page))
     elif callback_data.type_list == "cancel":
         await query.message.delete()
