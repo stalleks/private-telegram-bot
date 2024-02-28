@@ -12,6 +12,7 @@ cursor.execute('CREATE TABLE IF NOT EXISTS users ('
                'username varchar(50),'
                'full_name varchar(50),'
                'url varchar(50),'
+               'registration_date datetime,'
                'admin bool NOT NULL)'
                )
 connection.commit()
@@ -24,9 +25,10 @@ def get_user(user_id: int):
 
 
 def add_user(user: User):
-    cursor.execute("INSERT INTO users (id, username, full_name, url, admin) "
-                   "VALUES ('%s', '%s', '%s', '%s', '%s')" %
-                   (user.id, user.username, user.full_name, user.url, 0))
+    date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    cursor.execute("INSERT INTO users (id, username, full_name, url, registration_date, admin) "
+                   "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" %
+                   (user.id, user.username, user.full_name, user.url, date_time, 0))
     connection.commit()
 
 

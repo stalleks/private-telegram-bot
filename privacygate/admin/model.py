@@ -3,7 +3,7 @@ from ..database import *
 
 def check_admin(user_id: int) -> bool:
     user = get_user(user_id)
-    return bool(user[4])
+    return bool(user[5]) if len(user) > 0 else False
 
 
 def get_user_info(user_id: int) -> str:
@@ -12,7 +12,8 @@ def get_user_info(user_id: int) -> str:
                 f"id: {user[0]}\n" \
                 f"Полное имя: {user[2]}\n" \
                 f"url: {user[3]}\n" \
-                f"Права админа: {'есть' if user[4] else 'нет'}"
+                f"Зарегистрирован: {user[4]}\n" \
+                f"Права админа: {'есть' if user[5] else 'нет'}"
     return user_info
 
 
