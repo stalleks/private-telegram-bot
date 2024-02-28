@@ -19,7 +19,8 @@ connection.commit()
 
 def get_user(user_id: int):
     cursor.execute("SELECT * FROM users WHERE id = '%s'" % user_id)
-    return cursor.fetchall()
+    user = cursor.fetchall()
+    return user[0] if len(user) > 0 else ()
 
 
 def add_user(user: User):

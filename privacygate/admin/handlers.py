@@ -65,3 +65,19 @@ async def manage_access(query: CallbackQuery, callback_data: callbackdata.UsersL
         await query.message.edit_reply_markup(reply_markup=keyboard.list_requests(callback_data.num_page))
     elif callback_data.type_list == "cancel":
         await query.message.delete()
+
+
+@router.callback_query(callbackdata.UserInfo.filter(None))
+async def show_user_info(query: CallbackQuery, callback_data: callbackdata.UserInfo):
+    if callback_data.type_info == "member":
+        user_info = model.get_user_info(callback_data.user_id)
+        await query.message.edit_text(user_info, reply_markup=keyboard.edit_user(callback_data.user_id,
+                                                                                 callback_data.num_page))
+
+
+@router.callback_query(callbackdata.DeleteUser.filter(None))
+async def delete_user(query: CallbackQuery, callback_data: callbackdata.DeleteUser):
+    user_name = model.get_user_name(callback_data.user_id)
+    model.remove_user(callback_data.user_id)
+    await query.message.edit_text(f"Пользователь {user_name} удален!",
+                                  reply_markup=keyboard.list_users(callback_data.num_page))

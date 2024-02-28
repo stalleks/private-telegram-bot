@@ -6,6 +6,13 @@ class UsersList(CallbackData, prefix="userslist"):
     num_page: int
 
 
+class DeleteUser(CallbackData, prefix="deleteuser"):
+    user_id: int
+    num_page: int
+
+
 class UserInfo(CallbackData, prefix="userinfo"):
     type_info: str
     user_id: int
+    num_page: int
+

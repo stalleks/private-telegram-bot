@@ -3,11 +3,30 @@ from ..database import *
 
 def check_admin(user_id: int) -> bool:
     user = get_user(user_id)
-    return bool(user[0][4])
+    return bool(user[4])
+
+
+def get_user_info(user_id: int) -> str:
+    user = get_user(user_id)
+    user_info = f"Пользователь: {user[1]}\n" \
+                f"id: {user[0]}\n" \
+                f"Полное имя: {user[2]}\n" \
+                f"url: {user[3]}\n" \
+                f"Права админа: {'есть' if user[4] else 'нет'}"
+    return user_info
+
+
+def get_user_name(user_id: int) -> str:
+    user = get_user(user_id)
+    return user[1]
 
 
 def add_admin(user_id: int):
     update_user(user_id, "admin", "1")
+
+
+def remove_user(user_id: int):
+    delete_user(user_id)
 
 
 def remove_admin(user_id: int):

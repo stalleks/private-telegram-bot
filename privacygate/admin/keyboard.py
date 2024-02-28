@@ -27,8 +27,9 @@ def list_users(num_page: int) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     for user in users:
         builder.row(InlineKeyboardButton(text=user[1],
-                                         callback_data=callbackdata.UserInfo(type_info="members",
-                                                                             user_id=user[0]).pack()))
+                                         callback_data=callbackdata.UserInfo(type_info="member",
+                                                                             user_id=user[0],
+                                                                             num_page=num_page).pack()))
 
     button_prev = InlineKeyboardButton(text="⬅️",
                                        callback_data=callbackdata.UsersList(type_list="members",
@@ -50,6 +51,22 @@ def list_users(num_page: int) -> InlineKeyboardMarkup:
     return builder.as_markup()
 
 
+def edit_user(user_id: int, num_page: int) -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="Удалить",
+                                     callback_data=callbackdata.DeleteUser(user_id=user_id,
+                                                                           num_page=num_page).pack()),
+                InlineKeyboardButton(text="Назад",
+                                     callback_data=callbackdata.UsersList(type_list="members",
+                                                                          num_page=num_page).pack())
+            ]
+        ]
+    )
+    return keyboard
+
+
 def list_requests(num_page: int) -> InlineKeyboardMarkup:
     count_on_page = 3
     num_first_user = num_page * count_on_page
@@ -58,8 +75,9 @@ def list_requests(num_page: int) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     for user in users:
         builder.row(InlineKeyboardButton(text=user[1],
-                                         callback_data=callbackdata.UserInfo(type_info="requests",
-                                                                             user_id=user[0]).pack()))
+                                         callback_data=callbackdata.UserInfo(type_info="request",
+                                                                             user_id=user[0],
+                                                                             num_page=num_page).pack()))
 
     button_prev = InlineKeyboardButton(text="⬅️",
                                        callback_data=callbackdata.UsersList(type_list="requests",
