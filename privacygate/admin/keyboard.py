@@ -97,3 +97,26 @@ def list_requests(num_page: int) -> InlineKeyboardMarkup:
                                                                           num_page=num_page).pack()))
 
     return builder.as_markup()
+
+
+def edit_request(user_id: int, num_page: int) -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="Принять",
+                                     callback_data=callbackdata.ProcessingRequest(user_id=user_id,
+                                                                                  action="accept",
+                                                                                  num_page=num_page).pack()),
+                InlineKeyboardButton(text="Отклонить",
+                                     callback_data=callbackdata.ProcessingRequest(user_id=user_id,
+                                                                                  action="reject",
+                                                                                  num_page=num_page).pack())
+            ],
+            [
+                InlineKeyboardButton(text="Назад",
+                                     callback_data=callbackdata.UsersList(type_list="requests",
+                                                                          num_page=num_page).pack())
+            ]
+        ]
+    )
+    return keyboard

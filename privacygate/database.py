@@ -32,6 +32,13 @@ def add_user(user: User):
     connection.commit()
 
 
+def add_user_by_attr(user_id: int, username: str, full_name: str, url: str):
+    date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    cursor.execute("INSERT INTO users (id, username, full_name, url, registration_date, admin) "
+                   "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" %
+                   (user_id, username, full_name, url, date_time, 0))
+    connection.commit()
+
 def update_user(id: int, filed: str, value: str):
     cursor.execute("UPDATE users SET '%s' = '%s' WHERE id = '%s'" % (filed, value, id))
     connection.commit()
@@ -60,7 +67,8 @@ connection.commit()
 
 def get_subscription_request(user_id: int):
     cursor.execute("SELECT * FROM subscription_requests WHERE id = '%s'" % user_id)
-    return cursor.fetchall()
+    request = cursor.fetchall()
+    return request[0] if len(request) > 0 else ()
 
 
 def add_subscription_request(user: User):

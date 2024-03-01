@@ -68,3 +68,26 @@ def get_requests(num_first_key: int, count: int) -> tuple[list[tuple], bool]:
     select_users = [(users[i][0], users[i][1]) for i in range(num_first_key, num_stop_key)]
 
     return select_users, flag_end
+
+
+def get_request_info(user_id: int) -> str:
+    request = get_subscription_request(user_id)
+    request_info = f"Пользователь: {request[1]}\n" \
+                   f"id: {request[0]}\n" \
+                   f"Полное имя: {request[2]}\n" \
+                   f"url: {request[3]}\n" \
+                   f"Заявка подана: {request[4]}"
+    return request_info
+
+
+def accept_request(user_id: int) -> str:
+    user_attr = get_subscription_request(user_id)
+    add_user_by_attr(user_attr[0], user_attr[1], user_attr[2], user_attr[3])
+    delete_subscription_request(user_id)
+    return user_attr[1]
+
+
+def reject_request(user_id: int) -> str:
+    user_attr = get_subscription_request(user_id)
+    delete_subscription_request(user_id)
+    return user_attr[1]

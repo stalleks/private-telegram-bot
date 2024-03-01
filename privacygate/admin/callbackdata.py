@@ -16,3 +16,8 @@ class UserInfo(CallbackData, prefix="userinfo"):
     user_id: int
     num_page: int
 
+
+class ProcessingRequest(CallbackData, prefix="processingrequest"):
+    user_id: int
+    action: str
+    num_page: int
