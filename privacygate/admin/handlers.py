@@ -82,6 +82,7 @@ async def show_user_info(query: CallbackQuery, callback_data: callbackdata.UserI
 @router.callback_query(callbackdata.DeleteUser.filter(None))
 async def delete_user(query: CallbackQuery, callback_data: callbackdata.DeleteUser):
     user_name = model.get_user_name(callback_data.user_id)
+    #TODO: проверить наличе пользователя в БД перед удалением
     model.remove_user(callback_data.user_id)
     await query.message.edit_text(f"Пользователь {user_name} удален!",
                                   reply_markup=keyboard.list_users(callback_data.num_page))
@@ -89,6 +90,7 @@ async def delete_user(query: CallbackQuery, callback_data: callbackdata.DeleteUs
 
 @router.callback_query(callbackdata.ProcessingRequest.filter(None))
 async def show_request_info(query: CallbackQuery, callback_data: callbackdata.ProcessingRequest):
+    # TODO: проверить актуальность заявки перед ее обраборткой
     if callback_data.action == "accept":
         user_name = model.accept_request(callback_data.user_id)
         await query.message.edit_text(f"Пользователь {user_name} добавлен!",

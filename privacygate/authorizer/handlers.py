@@ -5,6 +5,8 @@ from . import keyboard
 from . import model
 from . import callbackdata
 from .. import database
+from ..notifier import notify_all_admins
+from ..admin import keyboard as admin_keyboard
 
 router = Router()
 
@@ -29,7 +31,9 @@ async def accept_user_request(query: CallbackQuery, callback_data: callbackdata.
             await query.message.delete()
             model.update_time_request(query.from_user.id)
         else:
-            await query.message.edit_text("Заявка принята")
             database.add_subscription_request(query.from_user)
+            await query.message.edit_text("Заявка принята")
+            await notify_all_admins(f"Принять завяку от пользователя {query.from_user.username}?",
+                                    admin_keyboard.edit_request(query.from_user.id, -1))
     else:
         await query.message.delete()

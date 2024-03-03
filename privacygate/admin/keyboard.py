@@ -68,6 +68,9 @@ def edit_user(user_id: int, num_page: int) -> InlineKeyboardMarkup:
 
 
 def list_requests(num_page: int) -> InlineKeyboardMarkup:
+    if num_page < 0:
+        return None
+
     count_on_page = 3
     num_first_user = num_page * count_on_page
     users, flag_end = model.get_requests(num_first_user, count_on_page)
@@ -100,23 +103,18 @@ def list_requests(num_page: int) -> InlineKeyboardMarkup:
 
 
 def edit_request(user_id: int, num_page: int) -> InlineKeyboardMarkup:
-    keyboard = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(text="Принять",
+    builder = InlineKeyboardBuilder()
+
+    builder.row(InlineKeyboardButton(text="Принять",
                                      callback_data=callbackdata.ProcessingRequest(user_id=user_id,
                                                                                   action="accept",
                                                                                   num_page=num_page).pack()),
                 InlineKeyboardButton(text="Отклонить",
                                      callback_data=callbackdata.ProcessingRequest(user_id=user_id,
                                                                                   action="reject",
-                                                                                  num_page=num_page).pack())
-            ],
-            [
-                InlineKeyboardButton(text="Назад",
-                                     callback_data=callbackdata.UsersList(type_list="requests",
-                                                                          num_page=num_page).pack())
-            ]
-        ]
-    )
-    return keyboard
+                                                                                  num_page=num_page).pack()))
+    if num_page >= 0:
+        builder.row(InlineKeyboardButton(text="Назад",
+                             callback_data=callbackdata.UsersList(type_list="requests",
+                                                                  num_page=num_page).pack()))
+    return builder.as_markup()

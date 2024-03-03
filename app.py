@@ -13,6 +13,7 @@ async def main() -> None:
     bot = Bot(BOT_TOKEN, parse_mode=ParseMode.HTML)
     dp = Dispatcher()
     dp.include_routers(privacygate.router)
+    privacygate.notifier.bot = bot
     await dp.start_polling(bot)
 
 

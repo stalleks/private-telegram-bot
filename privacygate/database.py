@@ -55,6 +55,12 @@ def all_users():
     return users
 
 
+def all_admin():
+    cursor.execute("SELECT * FROM users WHERE admin > 0")
+    users = cursor.fetchall()
+    return users
+
+
 cursor.execute('CREATE TABLE IF NOT EXISTS subscription_requests ('
                'id integer NOT NULL PRIMARY KEY,'
                'username varchar(50),'
