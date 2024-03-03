@@ -6,6 +6,7 @@ from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
 
 from . import model, callbackdata
 from . import keyboard
+from ..notifier import notify_user
 
 router = Router()
 
@@ -95,7 +96,9 @@ async def show_request_info(query: CallbackQuery, callback_data: callbackdata.Pr
         user_name = model.accept_request(callback_data.user_id)
         await query.message.edit_text(f"Пользователь {user_name} добавлен!",
                                       reply_markup=keyboard.list_requests(callback_data.num_page))
+        await notify_user(callback_data.user_id, "Ваша заявка принята🟢.\nДобро пожаловать")
     elif callback_data.action == "reject":
         user_name = model.reject_request(callback_data.user_id)
         await query.message.edit_text(f"Заявка пользователя {user_name} отклонена!",
                                       reply_markup=keyboard.list_requests(callback_data.num_page))
+        await notify_user(callback_data.user_id, "Ваша заявка отклонена⛔️.")
